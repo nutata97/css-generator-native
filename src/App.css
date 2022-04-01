@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .App-logo {
@@ -35,4 +35,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+  margin-left: 0px!important;
+}
+.ant-checkbox-wrapper:not(:first-child) {
+  margin-top: 10px!important;
 }
