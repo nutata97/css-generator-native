@@ -251,7 +251,7 @@ class App extends React.Component {
                   {
                     selectedItems.includes(CSSStyles.TOUCHABLE_OPACITY) &&
                     <Checkbox value={ CSSStyles.BACKGROUND_COLOR } style={{paddingLeft: 20}}>
-                      Background Color &nbsp;
+                      Change Background Color &nbsp;
                       {
                         selectedItems.includes(CSSStyles.BACKGROUND_COLOR) &&
                         <Dropdown 
@@ -263,7 +263,7 @@ class App extends React.Component {
                           
                           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                           <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                            Change background color 
+                            Hover to change 
                           </a>
                         </Dropdown>
                       }
