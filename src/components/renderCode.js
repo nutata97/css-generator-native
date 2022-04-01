@@ -10,16 +10,15 @@ const HighlightCode = styled(SyntaxHighlighter)`
 
 function renderCode(state, selectedItems, props){
   return (
-    <
+    <pre className='language-css' id='code-css-preview'
+    ref={(code) => props.node = code}
     >
-      <HighlightCode>
       { selectedItems.includes(CSSStyles.COLOR) ? 
-      `${CSSStyles.COLOR}: ${ RGBAToHexA(state.color.r, state.color.g, state.color.b, state.color.a) };` : '' }
-      </HighlightCode>
-      <HighlightCode>
+      `${CSSStyles.COLOR}: ${ RGBAToHexA(state.color.r, state.color.g, state.color.b, state.color.a) };\n` : '' }
+
       { selectedItems.includes(CSSStyles.LINE_HEIGHT) ? 
       `${CSSStyles.LINE_HEIGHT}: ${state.lineHeight};\n` : '' }
-      </HighlightCode>
+
       { selectedItems.includes(CSSStyles.LETTER_SPACING) ? 
       `${CSSStyles.LETTER_SPACING}: ${state.letterSpacing}px;\n` : '' }
 
@@ -37,7 +36,7 @@ function renderCode(state, selectedItems, props){
 
       { selectedItems.includes(CSSStyles.WORD_SPACING) ? 
       `${CSSStyles.WORD_SPACING}: ${state.wordSpacing}px;\n` : '' }
-    </>
+    </pre>
   )
 }
 

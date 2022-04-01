@@ -1,10 +1,10 @@
 import React from 'react';
 import './App.css';
 import 'antd/dist/antd.css';
-// import hljs from 'highlight.js';
+import hljs from 'highlight.js';
 import { Button, Card, Checkbox, Col, Row, Space, message, Dropdown } from 'antd';
-// import css from 'highlight.js/lib/languages/css'
-// import 'highlight.js/styles/base16/humanoid-dark.css'
+import css from 'highlight.js/lib/languages/css'
+import 'highlight.js/styles/base16/humanoid-dark.css'
 import CSSStyles from './CSSStyles';
 import renderCode from './components/renderCode';
 import Color from './components/Color';
@@ -18,8 +18,9 @@ import WordSpacing from './components/WordSpacing';
 import RGBAToHexA from './components/RGBAToHexA';
 import SyntaxHighlighter from 'react-native-syntax-highlighter'
 import { TouchableOpacity } from 'react-native-web';
+import renderHTMLCode from './components/renderHTMLCode';
 
-// hljs.registerLanguage('css', css)
+hljs.registerLanguage('css', css)
 
 const initialState = {
   selectedItems: [],
@@ -41,6 +42,13 @@ const initialState = {
     textTransform: 'none',
     wordSpacing: '0',
     touchableOpacity: false,
+    backgroundColor: {
+      hex: '#d4d4d4',
+      r: 212,
+      g: 212,
+      b: 212,
+      a: 1,
+    },
 };
 
 class App extends React.Component {
@@ -57,6 +65,10 @@ class App extends React.Component {
 
   handleChangeColor = (color) => {
     this.setState({ color: color.rgb });
+  };
+
+  handleChangeBackgroundColor = (color) => {
+    this.setState({ backgroundColor: color.rgb });
   };
 
   handleChangeLineHeight = (value) => {
@@ -112,11 +124,22 @@ class App extends React.Component {
   //   hljs.highlightBlock(this.node)
   // }
   componentDidMount(){
-    // hljs.highlightBlock(this.node)
+    hljs.highlightBlock(this.node)
   }
 
-  copyToClipboard() {
-    var from = document.getElementById('code-preview');
+  copyCSSToClipboard() {
+    var from = document.getElementById('code-css-preview');
+    var range = document.createRange();
+    window.getSelection().removeAllRanges();
+    range.selectNode(from);
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+    message.success('Code copied to clipboard!')
+  }
+
+  copyHTMLToClipboard() {
+    var from = document.getElementById('code-html-preview');
     var range = document.createRange();
     window.getSelection().removeAllRanges();
     range.selectNode(from);
@@ -147,7 +170,8 @@ class App extends React.Component {
                           fontSize: this.state.fontSize.value + this.state.fontSize.unit,         
                           fontWeight: this.state.fontWeight,         
                           textTransform: this.state.textTransform,         
-                          wordSpacing: this.state.wordSpacing,         
+                          wordSpacing: this.state.wordSpacing,   
+                          backgroundColor: `${ RGBAToHexA(this.state.backgroundColor.r, this.state.backgroundColor.g, this.state.backgroundColor.b, this.state.backgroundColor.a) }`,      
                         } }>
                         Ullamco aute dolore duis sint cillum ad sunt sunt culpa cupidatat sit minim. 
                         Lorem cupidatat proident duis ad dolor ex. 
@@ -179,11 +203,11 @@ class App extends React.Component {
 
                 <Col span={ 24 }>
                   <Row style={{justifyContent: 'space-between', marginBottom: 5}}>
-                    <Col>Code</Col>
+                    <Col>CSS Code</Col>
                     <Col>
                       <Button 
                         type='primary' 
-                        onClick={ this.copyToClipboard }
+                        onClick={ this.copyCSSToClipboard }
                         disabled={ selectedItems.length < 1 }
                       >
                         Copy to clipboard
@@ -192,6 +216,24 @@ class App extends React.Component {
                   </Row>
                   <Card style={{ backgroundColor: '#1b1b1b' }}>
                     {renderCode(this.state, selectedItems, this)}
+                  </Card> 
+                </Col>
+
+                <Col span={ 24 }>
+                  <Row style={{justifyContent: 'space-between', marginBottom: 5}}>
+                    <Col>HTML Code</Col>
+                    <Col>
+                      <Button 
+                        type='primary' 
+                        onClick={ this.copyCSSToClipboard }
+                        disabled={ selectedItems.length < 1 }
+                      >
+                        Copy to clipboard
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Card style={{ backgroundColor: '#1b1b1b' }}>
+                    {renderHTMLCode(selectedItems)}
                   </Card> 
                 </Col>
               </Row>
@@ -208,21 +250,27 @@ class App extends React.Component {
                   <Checkbox value={ CSSStyles.TOUCHABLE_OPACITY }>Touchable Opacity</Checkbox>
                   {
                     selectedItems.includes(CSSStyles.TOUCHABLE_OPACITY) &&
-                    <Checkbox value={ CSSStyles.BACKGROUND_COLOR } style={{paddingLeft: 20}}>Background Color</Checkbox>
+                    <Checkbox value={ CSSStyles.BACKGROUND_COLOR } style={{paddingLeft: 20}}>
+                      Background Color &nbsp;
+                      {
+                        selectedItems.includes(CSSStyles.BACKGROUND_COLOR) &&
+                        <Dropdown 
+                          placement='bottomRight'
+                          overlay={<Color
+                            color={ this.state.backgroundColor }
+                            onChange={ this.handleChangeBackgroundColor }
+                          />}>
+                          
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                            Change background color 
+                          </a>
+                        </Dropdown>
+                      }
+                      
+                    </Checkbox>
                   }
                   <Checkbox value={ CSSStyles.COLOR }>Color</Checkbox>
-                  <Dropdown 
-                    placement='bottomRight'
-                    overlay={<Color
-                      color={ this.state.color }
-                      onChange={ this.handleChangeColor }
-                    />}>
-                    
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                      Hover me 
-                    </a>
-                  </Dropdown>
                   { selectedItems.includes(CSSStyles.COLOR) && 
                     <Color
                       color={ this.state.color }
